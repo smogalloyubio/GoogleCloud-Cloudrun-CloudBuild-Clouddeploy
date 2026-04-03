@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-bitcoin-app
+  labels:
+    app: my-bitcoin-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-bitcoin-app
+  template:
+    metadata:
+      labels:
+        app: my-bitcoin-app
+    spec:
+      containers:
+      - name: my-bitcoin-app
+        image: rukevweubio/my-bitcoin-app:latest
+        ports:
+        - containerPort: 80
