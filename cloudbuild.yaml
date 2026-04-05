@@ -55,7 +55,7 @@ steps:
     args:
       [
         'deploy', 'releases', 'create', 'rel-$SHORT_SHA',
-        '--delivery-pipeline', 'my-app-pipeline',
+        '--delivery-pipeline', 'gke-deploy-pipeline',
         '--region', 'us-central1',
         '--annotations', 'commitId=$COMMIT_SHA',
         '--images', 'my-app-image=us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA'
