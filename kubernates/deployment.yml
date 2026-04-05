@@ -5,7 +5,7 @@ metadata:
   namespace: dev      
   labels:
     app: bitcoin-app
-    version: blue
+    version: blues
 spec:
   replicas: 2
   selector:
