@@ -1,7 +1,7 @@
 steps:
 
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'Build Image'
+    id: 'Build Image name'
     args: 
       [
         'build', 
@@ -24,7 +24,7 @@ steps:
         apt-get update && apt-get install -y trivy
         trivy image --exit-code 0 --severity HIGH,CRITICAL us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA
 
-        
+
  
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push to GCP'
