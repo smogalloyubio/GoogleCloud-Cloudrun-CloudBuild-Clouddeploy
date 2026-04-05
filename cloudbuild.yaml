@@ -1,18 +1,44 @@
 steps:
+
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build Image'
     args: 
       [
         'build', 
         '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA',
+        '-t', 'docker.io/${_DOCKER_USER}/my-app:$COMMIT_SHA',
         '-f', 'bitcoin-app/Dockerfile', 
         '.'                           
       ]
 
+
+  - name: 'aquasec/trivy:latest'
+    id: 'Scan Image'
+    args: ['image', '--exit-code', '0', '--severity', 'HIGH,CRITICAL', 'us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA']
+
+ 
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'Push Image'
+    id: 'Push to GCP'
     args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA']
 
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Docker Hub Login'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "$$DOCKER_PASSWORD" | docker login --username $$DOCKER_USERNAME --password-stdin
+    secretEnv: ['DOCKER_USERNAME', 'DOCKER_PASSWORD']
+
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push to Docker Hub'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        docker push docker.io/${_DOCKER_USER}/my-app:$COMMIT_SHA
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'Create Cloud Deploy Release'
@@ -25,6 +51,16 @@ steps:
         '--annotations', 'commitId=$COMMIT_SHA',
         '--images', 'my-app-image=us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA'
       ]
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/$PROJECT_ID/secrets/DOCKER_USERNAME_SECRET/versions/latest
+    env: 'DOCKER_USERNAME'
+  - versionName: projects/$PROJECT_ID/secrets/DOCKER_PASSWORD_SECRET/versions/latest
+    env: 'DOCKER_PASSWORD'
+
+substitutions:
+  _DOCKER_USER: 'rukevweubio' 
 
 options:
   logging: CLOUD_LOGGING_ONLY
