@@ -2,9 +2,18 @@ resource "google_clouddeploy_delivery_pipeline" "pipeline" {
   name     = "gke-deploy-pipeline"
   location = var.region
   
-  serial_pipeline {
-    stages {
-      target_id = "prod-gke"
+ strategy {
+  canary {
+    runtime_config {
+      kubernetes {
+        service_networking {
+          service    = "my-app-service" 
+          deployment = "my-app"         
+        }
+      }
+    }
+    canary_deployment {
+      percentages = [10, 50, 100]
     }
   }
 }
