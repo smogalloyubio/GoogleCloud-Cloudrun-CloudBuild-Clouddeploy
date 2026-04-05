@@ -1,9 +1,13 @@
 steps:
- 
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build Image'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA', '.']
-
+    args: 
+      [
+        'build', 
+        '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA',
+        '-f', 'bitcoin-app/Dockerfile', 
+        '.'                           
+      ]
 
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push Image'
