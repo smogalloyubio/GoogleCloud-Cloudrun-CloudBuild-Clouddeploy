@@ -12,10 +12,19 @@ steps:
       ]
 
 
-  - name: 'aquasec/trivy:latest'
+  - name: 'debian:bullseye-slim'
     id: 'Scan Image'
-    args: ['image', '--exit-code', '0', '--severity', 'HIGH,CRITICAL', 'us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        apt-get update && apt-get install -y wget apt-transport-https gnupg lsb-release
+        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | apt-key add -
+        echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | tee -a /etc/apt/sources.list.d/trivy.list
+        apt-get update && apt-get install -y trivy
+        trivy image --exit-code 0 --severity HIGH,CRITICAL us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA
 
+        
  
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push to GCP'
