@@ -8,7 +8,7 @@ steps:
         '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA',
         '-t', 'docker.io/${_DOCKER_USER}/my-app:$COMMIT_SHA',
         '-f', 'bitcoin-app/Dockerfile', 
-        '.'                           
+        'bitcoin-app'                         
       ]
 
 
