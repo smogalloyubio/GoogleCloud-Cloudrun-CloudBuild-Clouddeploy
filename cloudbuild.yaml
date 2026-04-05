@@ -1,0 +1,26 @@
+steps:
+ 
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build Image'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA', '.']
+
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push Image'
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA']
+
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'Create Cloud Deploy Release'
+    entrypoint: gcloud
+    args:
+      [
+        'deploy', 'releases', 'create', 'rel-$SHORT_SHA',
+        '--delivery-pipeline', 'my-app-pipeline',
+        '--region', 'us-central1',
+        '--annotations', 'commitId=$COMMIT_SHA',
+        '--images', 'my-app-image=us-central1-docker.pkg.dev/$PROJECT_ID/app-repo/my-app:$COMMIT_SHA'
+      ]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
