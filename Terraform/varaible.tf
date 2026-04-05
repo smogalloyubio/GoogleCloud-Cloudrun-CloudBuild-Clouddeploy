@@ -16,6 +16,6 @@ variable "zone" {
 }
 
 variable "env_name" {
-  type        = string
-  default     = "dev"
+  type    = string
+  default = "dev"
 }

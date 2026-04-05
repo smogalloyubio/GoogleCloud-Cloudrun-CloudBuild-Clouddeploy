@@ -3,8 +3,8 @@ resource "google_cloudbuild_trigger" "git_trigger" {
   service_account = var.devops_sa_id
 
   github {
-    owner = var.git_owner
-    name  = var.git_repo
+    owner = "smogalloyubio"
+    name  = "GoogleCloud-Cloudrun-CloudBuild-Clouddeploy"
     push {
       branch = "^main$"
     }
@@ -12,4 +12,3 @@ resource "google_cloudbuild_trigger" "git_trigger" {
 
   filename = "cloudbuild.yaml"
 }
-
