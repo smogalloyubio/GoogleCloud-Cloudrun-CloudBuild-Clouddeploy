@@ -145,7 +145,7 @@ infrastructure (GKE, Cloud Build, Artifact Registry, etc.).
 
 **Note:** These credentials are stored inside the container or your local credential store and are not committed to Git.
 
-![terraform authentication]()
+![terraform authentication](https://github.com/smogalloyubio/GoogleCloud-Cloudrun-CloudBuild-Clouddeploy/blob/main/picture/Screenshot%202026-04-05%20at%2012.55.59.png)
 
 
 ##  Step 4 Cloud Build Trigger Configuration
