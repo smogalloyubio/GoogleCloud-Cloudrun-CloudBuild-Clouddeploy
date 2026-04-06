@@ -244,7 +244,7 @@ The last phase of the project is the deployment of the application to the **Goog
 4. The application pod starts running in the cluster.
 5. The Service resource (defined in the manifests) exposes the application on **port 80** (HTTP) or **443** (HTTPS) as configured.
 6. You can access the application using the external IP or Load Balancer provided by GKE.
-
+![canary deploymnet](https://github.com/smogalloyubio/GoogleCloud-Cloudrun-CloudBuild-Clouddeploy/blob/main/picture/Screenshot%202026-04-05%20at%2018.14.41.png)
 This completes the end-to-end pipeline:  
 **git push → Build → Push to registries → Deploy to GKE**
 
