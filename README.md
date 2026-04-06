@@ -203,7 +203,9 @@ Terraform (in the `modules/cloud-deploy/` module) provisions the Cloud Deploy pi
 
 2. **Cloud Build Knows the Location**  
 In your `cloudbuild.yaml` file (located in the root of the repository), we specify the path to the Kubernetes folder so Cloud Build can find and pass the manifests to Cloud Deploy.
-
+---
+![cloud deploy](https://github.com/smogalloyubio/GoogleCloud-Cloudrun-CloudBuild-Clouddeploy/blob/main/picture/Screenshot%202026-04-05%20at%2018.08.14.png)
+---
 3. **Deployment Flow**
 - After successfully building and pushing the Docker image to **Artifact Registry**, Cloud Build triggers Cloud Deploy.
 - Cloud Deploy pulls the latest image from Artifact Registry.
