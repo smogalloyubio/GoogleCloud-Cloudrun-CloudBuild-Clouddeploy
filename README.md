@@ -6,7 +6,7 @@
 
 ## Introduction
 
-This project provides a fully automated, production-ready CI/CD pipeline on Google Cloud Platform (GCP) using Terraform. It provisions all the necessary infrastructure — from networking and security to GKE cluster, Cloud Build triggers, Artifact Registry, and Cloud Deploy — so that every time you push code to your Git repository, a Docker image is automatically built, pushed to **both** Google Artifact Registry **and** Docker Hub, and deployed to a Kubernetes cluster.
+This project provides a fully automated, production-ready CI/CD pipeline on Google Cloud Platform (GCP) using Terraform. It provisions all the necessary infrastructure from networking and security to GKE cluster, Cloud Build triggers, Artifact Registry, and Cloud Deploy so that every time you push code to your Git repository, a Docker image is automatically built, pushed to **both** Google Artifact Registry **and** Docker Hub, and deployed to a Kubernetes cluster.
 
 The entire setup is modular, secure (least-privilege IAM, Secret Manager for credentials), and follows GCP best practices. No manual steps are required after the initial `terraform apply`.
 
@@ -40,8 +40,6 @@ One `terraform apply` creates:
 - Secret Manager secrets for Docker Hub credentials  
 - Cloud Deploy pipeline that automatically deploys new images to GKE  
 
-Every `git push` now triggers a complete build → test → push (to two registries) → deploy workflow with zero manual intervention.
-
 ---
 
 ## Tools & Technologies Used
@@ -60,6 +58,23 @@ Every `git push` now triggers a complete build → test → push (to two registr
 | **VPC + Firewall**          | Secure networking for GKE |
 
 All modules are in the `modules/` folder and are called from the root `main.tf`.
+## Step 1 Terraform Execution Environment (Custom Docker Image)
+created a custom Docker image (based on a Debian base image) that includes Terraform CLI  and Google Cloud SDK (gcloud CLI) in a Docker file called  Dockerfile.Install  this pull the  Debian image. It installs all required dependencies
+Copies the entire Terraform workspace  into the container using the COPY or ADD instruction
+Sets up the working directory so the container is ready to run terraform init, terraform plan, and terraform apply immediately. This image is then built and pushed to Docker Hub (and also to Artifact Registry) as part of the pipeline.
+### Why I Chose This Approach
+- Consistency across machines — Anyone (or any CI runner) can pull the exact same image and run Terraform without installing Terraform, gcloud, or any dependencies locally.
+- Reproducibility — The exact versions of Terraform and gcloud are locked inside the image. This prevents version conflicts when working on similar projects in the future.
+- Portability & Zero Local Setup — You don't need to install anything on your laptop, Mac, or new developer machines. Just run
+```
+docker run --rm -v $(pwd):/workspace -w /workspace image-name
+terraform init
+terraform validate
+terraform apply -auto-approve
+```
+
+- install  and run teh docker command to install the terraform  and gcloud  cli
+
 
 ---
 
