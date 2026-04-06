@@ -117,7 +117,7 @@ terraform apply -auto-approve
 
 ```
 ---
-![terraform apply command ]()
+![terraform apply command ](https://github.com/smogalloyubio/GoogleCloud-Cloudrun-CloudBuild-Clouddeploy/blob/main/picture/Screenshot%202026-04-05%20at%2016.11.56.png)
 
 ---
 
