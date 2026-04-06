@@ -235,7 +235,8 @@ The last phase of the project is the deployment of the application to the **Goog
 - A secure VPC network and subnets
 - Firewall rules to allow necessary traffic (including port 80 and 443 for the application)
 - The GKE cluster itself (standard or Autopilot mode)
-
+---
+![cloud   deployment](https://github.com/smogalloyubio/GoogleCloud-Cloudrun-CloudBuild-Clouddeploy/blob/main/picture/Screenshot%202026-04-05%20at%2018.17.49.png)
 ### How Deployment Happens to the Cluster
 1. Cloud Deploy receives the successful build from Cloud Build.
 2. It pulls the Docker image from **Artifact Registry**.
