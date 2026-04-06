@@ -183,7 +183,7 @@ Once connected, every `git push` to the selected branch automatically starts the
 - Secure permissions using dedicated service account
 - No manual build steps required after initial setup
 
-![cloudbuild trigger]()
+![cloudbuild trigger](https://github.com/smogalloyubio/GoogleCloud-Cloudrun-CloudBuild-Clouddeploy/blob/main/picture/Screenshot%202026-04-05%20at%2017.21.47.png)
 
 ##  Step 5 Cloud Deploy Configuration
 Cloud Deploy is used for continuous deployment of the Docker image to the GKE cluster. It provides safe, automated, and repeatable deployments with built-in rollout strategies and rollback capabilities.
