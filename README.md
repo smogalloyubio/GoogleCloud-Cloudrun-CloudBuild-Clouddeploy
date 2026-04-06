@@ -221,7 +221,8 @@ In your `cloudbuild.yaml` file (located in the root of the repository), we speci
 - The image is always pulled from the secure private Artifact Registry created by Terraform.
 
 **Result**: Every `git push` automatically builds the image and deploys it safely to GKE using Cloud Deploy.
-   
+---
+![cloud deploy](https://github.com/smogalloyubio/GoogleCloud-Cloudrun-CloudBuild-Clouddeploy/blob/main/picture/Screenshot%202026-04-05%20at%2018.04.25.png)
 
 ##  Step 5 GKE Cluster & Final Deployment
 
