@@ -13,7 +13,7 @@ The entire setup is modular, secure (least-privilege IAM, Secret Manager for cre
 ---
 
 ## Architecture Diagram
-![Architectural diagram]()
+![Architectural diagram](https://github.com/smogalloyubio/GoogleCloud-Cloudrun-CloudBuild-Clouddeploy/blob/main/picture/my-docker-pipeline.jpeg)
 
 ---
 ## Problem Statement
