@@ -67,14 +67,52 @@ Sets up the working directory so the container is ready to run terraform init, t
 - Reproducibility — The exact versions of Terraform and gcloud are locked inside the image. This prevents version conflicts when working on similar projects in the future.
 - Portability & Zero Local Setup — You don't need to install anything on your laptop, Mac, or new developer machines. Just run
 ```
+
+FROM debian:bookworm-slim
+
+ENV TERRAFORM_VERSION=1.7.0
+
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+    software-properties-common \
+    unzip \
+    git \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+
+RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform.zip \
+    && unzip terraform.zip \
+    && mv terraform /usr/local/bin/ \
+    && rm terraform.zip
+
+
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" \
+    | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
+    && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+    | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg \
+    && apt-get update -y && apt-get install google-cloud-cli -y
+
+
+WORKDIR /infrastructure
+
+COPY . .
+
+CMD ["/bin/bash", "-c", "terraform --version && gcloud --version && exec /bin/bash"]
+
 docker run --rm -v $(pwd):/workspace -w /workspace image-name
+
 terraform init
+
 terraform validate
+
 terraform apply -auto-approve
+
 ```
-
-- install  and run teh docker command to install the terraform  and gcloud  cli
-
+---
+![terraform apply command ]()
 
 ---
 
