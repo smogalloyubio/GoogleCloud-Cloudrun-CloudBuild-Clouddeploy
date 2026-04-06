@@ -252,4 +252,4 @@ This completes the end-to-end pipeline:
 Every code change is automatically built, tested, and deployed to a live GKE cluster with minimal manual intervention.
 
 ---
-![Google Gke cloud]()
+![Google Gke cloud](https://github.com/smogalloyubio/GoogleCloud-Cloudrun-CloudBuild-Clouddeploy/blob/main/picture/Screenshot%202026-04-05%20at%2018.01.38.png)
