@@ -12,6 +12,10 @@ The entire setup is modular, secure (least-privilege IAM, Secret Manager for cre
 
 ---
 
+## Architecture Diagram
+![Architectural diagram]()
+
+---
 ## Problem Statement
 
 Modern applications require fast, reliable, and repeatable deployments. However, setting up a complete CI/CD pipeline on GCP involves many complex components:
@@ -116,6 +120,27 @@ terraform apply -auto-approve
 
 ---
 
-## Architecture Diagram
-![Architectural diagram]()
 
+
+##  Step 3 GCP Authentication for Terraform
+
+To allow Terraform to provision resources in Google Cloud, the `gcloud` CLI must be authenticated inside the Docker container (or on the host).
+
+### Steps Performed:
+I used two essential commands:
+
+1. **`gcloud auth login`**  
+   - Authenticates the `gcloud` CLI with your personal Google account (interactive browser login).
+
+2. **`gcloud auth application-default login`**  
+   - Configures **Application Default Credentials (ADC)** that Terraform uses to authenticate with GCP APIs.
+
+### Why Both Commands Are Needed
+- `gcloud auth login` → Used by the `gcloud` CLI itself.
+- `gcloud auth application-default login` → Provides credentials specifically for Terraform and other client libraries.
+
+After running these commands once inside the Docker container, Terraform can successfully connect to your GCP project and provision the infrastructure (GKE, Cloud Build, Artifact Registry, etc.).
+
+**Note:** These credentials are stored inside the container or your local credential store and are not committed to Git.
+
+![terraform authentication]()
