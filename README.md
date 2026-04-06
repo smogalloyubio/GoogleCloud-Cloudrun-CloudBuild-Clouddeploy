@@ -45,7 +45,8 @@ One `terraform apply` creates:
 - Cloud Deploy pipeline that automatically deploys new images to GKE  
 
 ---
-
+![terraform  modules](https://github.com/smogalloyubio/GoogleCloud-Cloudrun-CloudBuild-Clouddeploy/blob/main/picture/Screenshot%202026-04-05%20at%2013.14.32.png)
+---
 ## Tools & Technologies Used
 
 | Tool / Service              | Purpose |
