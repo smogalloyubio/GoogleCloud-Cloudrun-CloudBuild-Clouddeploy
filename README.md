@@ -166,6 +166,8 @@ After running `terraform apply`, the trigger is pre-configured in GCP. You only 
 5. Select the branch (usually `main` or `master`) and the path to your `cloudbuild.yaml` file.
 
 Once connected, every `git push` to the selected branch automatically starts the Cloud Build pipeline.
+---
+![cloud build](https://github.com/smogalloyubio/GoogleCloud-Cloudrun-CloudBuild-Clouddeploy/blob/main/picture/Screenshot%202026-04-05%20at%2018.00.53.png)
 
 ### Detailed Flow
 
