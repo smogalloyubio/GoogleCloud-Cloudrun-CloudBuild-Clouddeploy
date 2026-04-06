@@ -218,4 +218,31 @@ In your `cloudbuild.yaml` file (located in the root of the repository), we speci
 - The image is always pulled from the secure private Artifact Registry created by Terraform.
 
 **Result**: Every `git push` automatically builds the image and deploys it safely to GKE using Cloud Deploy.
-   ```
+   
+
+##  Step 5 GKE Cluster & Final Deployment
+
+### Overview
+The last phase of the project is the deployment of the application to the **Google Kubernetes Engine (GKE)** cluster. Terraform fully provisions the GKE cluster along with all supporting resources (VPC, subnets, and firewall rules).
+
+### What Was Provisioned by Terraform
+- A secure VPC network and subnets
+- Firewall rules to allow necessary traffic (including port 80 and 443 for the application)
+- The GKE cluster itself (standard or Autopilot mode)
+
+### How Deployment Happens to the Cluster
+1. Cloud Deploy receives the successful build from Cloud Build.
+2. It pulls the Docker image from **Artifact Registry**.
+3. Using the Kubernetes manifests (`deployment.yaml` and `skaffold.yaml`) stored in the Git repository, Cloud Deploy applies the configuration to the GKE cluster.
+4. The application pod starts running in the cluster.
+5. The Service resource (defined in the manifests) exposes the application on **port 80** (HTTP) or **443** (HTTPS) as configured.
+6. You can access the application using the external IP or Load Balancer provided by GKE.
+
+This completes the end-to-end pipeline:  
+**git push → Build → Push to registries → Deploy to GKE**
+
+### Final Result
+Every code change is automatically built, tested, and deployed to a live GKE cluster with minimal manual intervention.
+
+---
+![Google Gke cloud]()
