@@ -139,8 +139,83 @@ I used two essential commands:
 - `gcloud auth login` → Used by the `gcloud` CLI itself.
 - `gcloud auth application-default login` → Provides credentials specifically for Terraform and other client libraries.
 
-After running these commands once inside the Docker container, Terraform can successfully connect to your GCP project and provision the infrastructure (GKE, Cloud Build, Artifact Registry, etc.).
+After running these commands once inside the Docker container, Terraform can successfully connect to your GCP project and provision the 
+infrastructure (GKE, Cloud Build, Artifact Registry, etc.).
 
 **Note:** These credentials are stored inside the container or your local credential store and are not committed to Git.
 
 ![terraform authentication]()
+
+
+##  Step 4 Cloud Build Trigger Configuration
+Cloud Build is the core CI service in this project. It automatically triggers a build whenever code is pushed to the Git repository. Terraform provisions the Cloud Build trigger so the entire pipeline (build → push to registries → deploy) runs automatically.
+
+### How It Was Done
+Terraform (in the `modules/cloud-build/` module) creates:
+- A dedicated Cloud Build service account with the necessary permissions
+- A Cloud Build trigger that is connected to your Git repository
+
+After running `terraform apply`, the trigger is pre-configured in GCP. You only need to complete the repository connection in the Google Cloud Console (one-time manual step).
+
+### Connection Steps (Summary)
+1. Run `terraform apply` – Terraform creates the trigger resource.
+2. Go to **Google Cloud Console → Cloud Build → Triggers**.
+3. Click on the trigger created by Terraform.
+4. Connect your Git repository (GitHub) using the GCP connector.
+5. Select the branch (usually `main` or `master`) and the path to your `cloudbuild.yaml` file.
+
+Once connected, every `git push` to the selected branch automatically starts the Cloud Build pipeline.
+
+### Detailed Flow
+
+- You push code to your Git repo → Cloud Build trigger fires
+- Cloud Build uses the custom Docker image (or default steps) to:
+  - Build the application Docker image
+  - Push it to Google Artifact Registry
+  - Retrieve Docker Hub credentials from Secret Manager
+  - Push the same image to Docker Hub
+- On successful build, Cloud Deploy automatically rolls out the new image to the GKE cluster
+
+### Key Benefits
+- Fully automated CI pipeline
+- Trigger is managed as code via Terraform (reproducible and version-controlled)
+- Secure permissions using dedicated service account
+- No manual build steps required after initial setup
+
+![cloudbuild trigger]()
+
+##  Step 5 Cloud Deploy Configuration
+Cloud Deploy is used for continuous deployment of the Docker image to the GKE cluster. It provides safe, automated, and repeatable deployments with built-in rollout strategies and rollback capabilities.
+Terraform (in the `modules/cloud-deploy/` module) provisions the Cloud Deploy pipeline and target.
+
+### How the Deployment Works (Simple Summary)
+
+1. **Managed Configuration in Git Repository**  
+   The Kubernetes manifests (deployment, service, etc.) are stored in the Git repository under a dedicated directory
+   
+   ```
+   k8s/
+    ├── deployment.yaml
+    ├── service.yaml
+
+2. **Cloud Build Knows the Location**  
+In your `cloudbuild.yaml` file (located in the root of the repository), we specify the path to the Kubernetes folder so Cloud Build can find and pass the manifests to Cloud Deploy.
+
+3. **Deployment Flow**
+- After successfully building and pushing the Docker image to **Artifact Registry**, Cloud Build triggers Cloud Deploy.
+- Cloud Deploy pulls the latest image from Artifact Registry.
+- It applies the Kubernetes manifests from the `k8s/` directory (managed via `skaffold.yaml`).
+- The image is deployed to the GKE cluster with zero-downtime rollout.
+
+### Key Files
+- **`skaffold.yaml`** – Defines how to render and deploy the Kubernetes manifests.
+- **`deployment.yaml`** – Contains the Kubernetes Deployment that references the image from Artifact Registry.
+- **`service.yaml`** (optional) – Exposes the application.
+
+### Why This Approach
+- All deployment configuration lives **as code** in Git (version-controlled and auditable).
+- Cloud Deploy handles progressive delivery, approvals, and rollbacks automatically.
+- The image is always pulled from the secure private Artifact Registry created by Terraform.
+
+**Result**: Every `git push` automatically builds the image and deploys it safely to GKE using Cloud Deploy.
+   ```
